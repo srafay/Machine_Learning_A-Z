@@ -14,6 +14,7 @@
 	* Polynomial Linear Regression
 	* Support Vector Regression (SVR)
 	* Decision Tree Regression
+	*Random Forest Regression
 
-Recommendation for ML Enthusiasts: [Machine Learning A-Z™: Hands-On Python & R In Data Science](https://www.udemy.com/machinelearning/)
+* Recommendation for ML Enthusiasts: [Machine Learning A-Z™: Hands-On Python & R In Data Science](https://www.udemy.com/machinelearning/)
 
