@@ -24,6 +24,9 @@
 	* Naive Bayse
 	* Decision Tree Classifiers
 	* Random Forest Classifiers
+	
+4. **Clustering**
+	* K-Means Clustering
 
 * Recommendation for ML Enthusiasts: [Machine Learning A-Z™: Hands-On Python & R In Data Science](https://www.udemy.com/machinelearning/)
 
