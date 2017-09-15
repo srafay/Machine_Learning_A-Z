@@ -29,8 +29,11 @@
 	* K-Means Clustering
 	* Hierarchical Clustering
 	
-5. **Association Rule Learning
+5. **Association Rule Learning**
 	* Apriori
+	
+6. **Deep Learning**
+	* Artifial Neural Networks (ANN)	
 
 * Recommendation for ML Enthusiasts: [Machine Learning A-Z™: Hands-On Python & R In Data Science](https://www.udemy.com/machinelearning/)
 
