@@ -22,7 +22,7 @@ from keras.layers import Dense
 classifier = Sequential()
 
 # Step 1 - Convolution
-classifier.add(Convolution2D(32, 3, 3, input_shape = (64, 64, 3), activation = 'relu'))
+classifier.add(Convolution2D(32, 3, 3, input_shape = (32, 32, 3), activation = 'relu'))
 
 # Step 2 - Pooling
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
@@ -36,12 +36,12 @@ classifier.add(Flatten())
 
 # Step 4 - Full connection
 classifier.add(Dense(output_dim = 128, activation = 'relu'))
-classifier.add(Dense(output_dim = 1, activation = 'sigmoid'))
+classifier.add(Dense(output_dim = 2, activation = 'softmax'))
 #Softmax activation function for non-binary classification
 #no of output neurons 
 
 # Compiling the CNN
-classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 #adam = Stochastic optimization
 #categorical_crossentropy - for non-binary classification
@@ -58,18 +58,20 @@ train_datagen = ImageDataGenerator(rescale = 1./255,
 test_datagen = ImageDataGenerator(rescale = 1./255)
 
 training_set = train_datagen.flow_from_directory('dataset/training_set',
-                                                 target_size = (64, 64),
+                                                 target_size = (32, 32),
                                                  batch_size = 32,
-                                                 class_mode = 'binary')
+                                                 class_mode = 'categorical')
+
+#target size - size expected by the convolution layer
 
 test_set = test_datagen.flow_from_directory('dataset/test_set',
-                                            target_size = (64, 64),
+                                            target_size = (32, 32),
                                             batch_size = 32,
-                                            class_mode = 'binary')
+                                            class_mode = 'categorical')
 
 classifier.fit_generator(training_set,
                          samples_per_epoch = 8000,
-                         nb_epoch = 2,
+                         nb_epoch = 1,
                          validation_data = test_set,
                          nb_val_samples = 2000)
 
@@ -79,17 +81,17 @@ classifier.fit_generator(training_set,
 from keras.preprocessing.image import img_to_array, load_img
 import numpy
 
-def classify(x):
-    if (x==1):
-        print ("Its a cat!")
+def classify(y):
+    if (y.item(0)<y.item(1)):
+        print ("Its a cat! (probability = " + str(y.item(1)) + ")")
     else:
-        print ("Its a dog!")
+        print ("Its a dog! (probability = " + str(y.item(0)) + ")")
         
 def predict(path):
     img = load_img(path)  # this is an image
 
     pixelsarray = img_to_array(img)  # convery to numpy array
-    x = numpy.resize(pixelsarray, (64,64,3))
+    x = numpy.resize(pixelsarray, (32,32,3))
     
     inputarray = x[numpy.newaxis,...]
     
@@ -97,4 +99,4 @@ def predict(path):
     
 
 #####################################
-predict ("the_image_you_want_to_test.jpg")
+predict ("dog3.jpg")
