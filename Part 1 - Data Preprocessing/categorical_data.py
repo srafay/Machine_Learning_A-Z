@@ -5,10 +5,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# Import comet_ml in the top of your file
+from comet_ml import Experiment
+
+experiment  = Experiment(api_key="Dz2W3DAahv0OvSAERUfhA5b7I")
+
 # Importing the dataset
 dataset = pd.read_csv('Data.csv')
-X = dataset.iloc[:, :-1].values
+X = dataset.iloc[:, [0,1,2]].values
 y = dataset.iloc[:, 3].values
+
+# GeT to know your data
+dataset.describe()
+dataset.info()
+
+# Check if missing values
+dataset.isnull().values.any()
+
+# Check number of NaNs
+dataset.isnull().sum().sum()
 
 # Taking care of missing data
 from sklearn.preprocessing import Imputer
