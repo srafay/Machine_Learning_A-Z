@@ -9,12 +9,36 @@
 # Installing Keras
 # pip install --upgrade keras
 
+from comet_ml import Experiment
+
+#create an experiment with your api key
+experiment = Experiment(api_key="Dz2W3DAahv0OvSAERUfhA5b7I",
+                        project_name='general',
+                        auto_param_logging=False)
+
+batch_size = 10
+epochs = 50
+num_nodes = 6
+activation = 'relu'
+optimizer = 'adam'
+
+#these will all get logged 
+params={'batch_size':batch_size,
+        'epochs':epochs,
+        'layer1_type':'Dense',
+        'layer1_num_nodes':num_nodes,
+        'layer1_activation':activation,
+        'optimizer':optimizer
+}
+
+
 # Part 1 - Data Preprocessing
 
 # Importing the libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from keras.callbacks import EarlyStopping
 
 # Importing the dataset
 dataset = pd.read_csv('Churn_Modelling.csv')
@@ -60,18 +84,40 @@ classifier.add(Dense(output_dim = 6, init = 'uniform', activation = 'relu'))
 # Adding the output layer
 classifier.add(Dense(output_dim = 1, init = 'uniform', activation = 'sigmoid'))
 
+#print model.summary() to preserve automatically in `Output` tab
+print(classifier.summary())
+
 # Compiling the ANN
 classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
 
-# Fitting the ANN to the Training set
-classifier.fit(X_train, y_train, batch_size = 10, nb_epoch = 100)
+
+#will log metrics with the prefix 'train_'
+with experiment.train():
+    # Fitting the ANN to the Training set
+    classifier.fit(X_train, y_train,
+                   batch_size = batch_size,
+                   nb_epoch = epochs,
+                   verbose = 1,
+                   callbacks=[EarlyStopping(monitor='val_loss', min_delta=1e-4,patience=3, verbose=1, mode='auto')])
 
 # Part 3 - Making the predictions and evaluating the model
 
 # Predicting the Test set results
-y_pred = classifier.predict(X_test)
-y_pred = (y_pred > 0.5)
+    y_pred = classifier.predict(X_test)
+    y_pred = (y_pred > 0.5)
+
+#will log metrics with the prefix 'test_'
+with experiment.test():
+    loss, accuracy = classifier.evaluate(X_test, y_test)
+    metrics = {
+        'loss':loss,
+        'accuracy':accuracy
+    }
+    experiment.log_multiple_metrics(metrics)
 
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
+
+experiment.log_multiple_params(params)
+experiment.log_dataset_hash(X_train) #creates and logs a hash of your data
