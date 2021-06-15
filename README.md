@@ -21,7 +21,7 @@
 	* K-Nearest Neighbors (K-NN)
 	* Support Vector Machine (SVM)
 	* Kernel SVM
-	* Naive Bayse
+	* Naive Bayes
 	* Decision Tree Classifiers
 	* Random Forest Classifiers
 	
